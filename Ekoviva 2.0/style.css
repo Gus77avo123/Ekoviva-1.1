@@ -1,0 +1,265 @@
+/* Resetando margens, paddings e definindo box-sizing global */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Oswald", sans-serif;
+}
+
+/* Interface principal */
+.interface {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px; /* Adicionado para evitar colagem nas bordas */
+}
+
+/* Estilo geral do corpo */
+body {
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif; /* Fallback caso "Oswald" não carregue */
+}
+
+/* Cabeçalho (Header) */
+header {
+    width: 100%;
+    background-image: url('./imagem/image (6).jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Topo do cabeçalho */
+.top-header .interface {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.top-header .logotipo img {
+    max-width: 240px;
+    height: auto;
+}
+
+.top-header .rede-social button {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 2px solid #000;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.top-header .rede-social button:hover {
+    background-color: #2e8b7f;
+    border-color: #2e8b7f;
+}
+
+/* Menu inferior do cabeçalho */
+.bottom-header nav ul {
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    padding: 10px;
+}
+
+.bottom-header nav ul li {
+    margin: 0 15px;
+    position: relative; /* Para o dropdown */
+}
+
+.bottom-header nav ul li a {
+    color: #000;
+    padding: 20px;
+    text-decoration: none;
+    font-weight: 600;
+    display: block;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.bottom-header nav ul li a:hover {
+    background-color: #000;
+    color: #fff;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Dropdown */
+.droop-hover .drop {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #4a445f;
+    width: 100%;
+    max-height: 200px; /* Mantido para possíveis expansões */
+    overflow-y: auto; /* Adiciona barra de rolagem vertical */
+    opacity: 0;
+    transition: opacity 0.4s, padding-top 0.4s;
+    padding-top: 0;
+}
+
+.droop-hover:hover .drop {
+    opacity: 1;
+    padding-top: 20px;
+}
+
+.droop-hover .drop::-webkit-scrollbar {
+    width: 8px; /* Largura da barra de rolagem */
+}
+
+.droop-hover .drop::-webkit-scrollbar-track {
+    background: #4a445f; /* Cor do fundo da barra */
+}
+
+.droop-hover .drop::-webkit-scrollbar-thumb {
+    background: #2e8b7f; /* Cor do "polegar" da barra */
+    border-radius: 4px;
+}
+
+.droop-hover .drop::-webkit-scrollbar-thumb:hover {
+    background: #235f53; /* Cor ao passar o mouse */
+}
+
+.droop-hover .drop a {
+    color: #fff;
+    padding: 20px;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.2s;
+}
+
+.droop-hover .drop a:hover {
+    background-color: #2e8b7f;
+}
+
+.cliente-info {
+    margin: 10px 0;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Seções principais */
+section {
+    text-align: center;
+    padding: 40px 0;
+}
+
+section h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+section p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Lista de produtos */
+.product-list {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.product-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    width: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.product-item img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.product-item h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.product-item p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.product-item button {
+    padding: 8px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.product-item button:hover {
+    background-color: #218838;
+}
+
+/* Rodapé */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: #fff;
+}
+
+/* Responsividade */
+@media screen and (max-width: 768px) {
+    .top-header .interface {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .top-header .rede-social {
+        margin-top: 10px;
+    }
+
+    .bottom-header nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .bottom-header nav ul li {
+        margin: 10px 0;
+    }
+
+    .droop-hover:hover .drop {
+        position: static;
+        width: 100%;
+        max-height: 200px; /* Mantém o limite em telas menores */
+        opacity: 1;
+        padding-top: 0;
+    }
+
+    .product-item {
+        width: calc(50% - 20px);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .product-item {
+        width: 100%;
+    }
+}

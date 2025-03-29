@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Acompanhamento de Frete - Ekoviva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #2E7D32;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 20px;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background-color: #2E7D32;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1B5E20;
+        }
+        #result {
+            margin-top: 30px;
+            padding: 10px;
+            background: #e8f5e9;
+            border: 1px solid #2E7D32;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rastreamento de Frete - Ekoviva</h1>
+        <label for="trackingCode">Código de Rastreamento:</label>
+        <input type="text" id="trackingCode" placeholder="Digite seu código">
+        <button onclick="trackShipment()">Rastrear</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function trackShipment() {
+            const trackingCode = document.getElementById('trackingCode').value.trim();
+            const resultDiv = document.getElementById('result');
+
+            if (!trackingCode) {
+                alert('Por favor, insira um código de rastreamento válido.');
+                return;
+            }
+
+            // Verifica se o código corresponde ao armazenado no localStorage
+            const storedTrackingNumber = localStorage.getItem('trackingNumber');
+            if (trackingCode === storedTrackingNumber) {
+                resultDiv.innerHTML = `Status do frete (${trackingCode}): Em trânsito - Previsão de entrega: 3 dias úteis.`;
+                resultDiv.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = "perfil.html"; // Redireciona para perfil.html
+                }, 2000); // Redireciona após 2 segundos
+            } else {
+                resultDiv.innerHTML = `Código de rastreamento (${trackingCode}) não encontrado. Verifique o código informado.`;
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        // Função para preencher automaticamente o código do localStorage
+        function loadTrackingCode() {
+            const trackingNumber = localStorage.getItem('trackingNumber');
+            if (trackingNumber) {
+                const trackingCodeInput = document.getElementById('trackingCode');
+                trackingCodeInput.value = trackingNumber;
+                trackShipment(); // Rastreia automaticamente ao carregar
+            }
+        }
+
+        // Executa ao carregar a página
+        window.onload = loadTrackingCode;
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho e Pagamento - eKoviva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .cart-container {
+            margin-top: 30px;
+        }
+        .cart-items table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .cart-items table, th, td {
+            border: 1px solid #ddd;
+        }
+        .cart-items th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .cart-items th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .total-price {
+            text-align: right;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+        }
+        .back-btn {
+            background: #f44336;
+        }
+        .back-btn:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Carrinho e Pagamento - eKoviva</h1>
+        <p>Confirme seu carrinho e escolha sua forma de pagamento!</p>
+    </header>
+
+    <div class="container">
+        <div class="cart-container">
+            <h2>Itens no Carrinho</h2>
+            <div class="cart-items">
+                <table id="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Preço</th>
+                            <th>Quantidade</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items-body">
+                        <!-- Itens do carrinho serão exibidos aqui -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="total-price">
+                <p><strong>Total: R$ <span id="total-price">0,00</span></strong></p>
+            </div>
+
+            <button class="checkout-btn" onclick="checkout()">Finalizar Compra</button>
+            <button class="back-btn" onclick="window.history.back()">Voltar</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function updateCart() {
+            let cartItemsBody = document.getElementById("cart-items-body");
+            cartItemsBody.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                let row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>R$ ${item.price.toFixed(2)}</td>
+                    <td>${item.quantity}</td>
+                    <td><button onclick="removeFromCart('${item.name}')">Remover</button></td>
+                `;
+                cartItemsBody.appendChild(row);
+                total += item.price * item.quantity;
+            });
+
+            document.getElementById("total-price").textContent = total.toFixed(2).replace('.', ',');
+            return total;
+        }
+
+        function removeFromCart(productName) {
+            cart = cart.filter(item => item.name !== productName);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Seu carrinho está vazio! Adicione itens na página de produtos.");
+                return;
+            }
+            const total = updateCart();
+            alert(`Carrinho confirmado! Total a pagar: R$ ${total.toFixed(2).replace('.', ',')}`);
+            window.location.href = "pagamento.html"; // Redireciona para pagamento.html
+        }
+
+        updateCart();
+    </script>
+</body>
+</html>

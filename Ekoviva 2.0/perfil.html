@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Perfil do Cliente - eKoverde</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .perfil-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #4CAF50;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .info-section {
+            margin-bottom: 20px;
+        }
+        .info-section p {
+            font-size: 16px;
+            color: #666;
+        }
+        .foto-perfil {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto;
+            display: block;
+            border: 2px solid #4CAF50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .btn-logout {
+            background-color: #dc3545;
+        }
+        .btn-logout:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="perfil-container">
+        <h1>Perfil do Cliente - eKoverde</h1>
+
+        <div class="info-section" id="foto-section">
+            <img id="foto-perfil" class="foto-perfil" src="" alt="Foto do Perfil">
+        </div>
+
+        <div class="info-section" id="dados-pessoais">
+            <h2>Dados Pessoais</h2>
+            <p id="nome"></p>
+            <p id="email"></p>
+            <p id="telefone"></p>
+            <p id="endereco"></p>
+            <p id="data-nascimento"></p>
+        </div>
+
+        <div class="info-section" id="historico-section">
+            <h2>Histórico de Compras e Rastreamento</h2>
+            <table id="rastreamento-table">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Preço</th>
+                        <th>Quantidade</th>
+                        <th>Total</th>
+                        <th>Data da Compra</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="rastreamento-list"></tbody>
+            </table>
+            <a href="carrinho.html" class="btn">Ver Carrinho Atual</a>
+        </div>
+
+        <div class="info-section" id="fidelidade-section">
+            <h2>Pontos de Fidelidade</h2>
+            <p id="pontos-fidelidade">Você ainda não tem pontos de fidelidade.</p>
+            <a href="fidelidade.html" class="btn">Acumular Pontos</a>
+        </div>
+
+        <div class="info-section">
+            <a href="index.html" class="btn">Voltar à Página Inicial</a>
+            <button class="btn btn-logout" onclick="logout()">Sair</button>
+        </div>
+    </div>
+
+    <script>
+        // Verificar cliente logado
+        const clienteLogado = JSON.parse(localStorage.getItem("clienteLogado"));
+        if (!clienteLogado || !clienteLogado.email) {
+            window.location.href = "entrar.html";
+            return;
+        }
+
+        // Carregar dados do cliente a partir do banco de dados
+        const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+        const clienteAtual = clientes.find(c => c.email === clienteLogado.email);
+
+        if (!clienteAtual) {
+            alert("Cliente não encontrado no banco de dados!");
+            window.location.href = "entrar.html";
+            return;
+        }
+
+        // Carregar foto do perfil
+        const fotoPerfil = document.getElementById("foto-perfil");
+        if (clienteAtual.foto && clienteAtual.foto !== "") {
+            fotoPerfil.src = clienteAtual.foto;
+            fotoPerfil.onerror = () => {
+                fotoPerfil.src = "https://via.placeholder.com/150"; // Imagem padrão em caso de erro
+            };
+        } else {
+            fotoPerfil.src = "https://via.placeholder.com/150"; // Imagem padrão
+        }
+
+        // Carregar dados pessoais
+        document.getElementById("nome").textContent = `Nome: ${clienteAtual.nome || 'Não informado'}`;
+        document.getElementById("email").textContent = `E-mail: ${clienteAtual.email || 'Não informado'}`;
+        document.getElementById("telefone").textContent = `Telefone: ${clienteAtual.telefone || 'Não informado'}`;
+        document.getElementById("endereco").textContent = `Endereço: ${clienteAtual.endereco || 'Não informado'}`;
+        document.getElementById("data-nascimento").textContent = `Data de Nascimento: ${clienteAtual.data_nascimento || 'Não informada'}`;
+
+        // Carregar histórico de compras com rastreamento
+        const rastreamentoList = document.getElementById("rastreamento-list");
+        const historicoCompras = JSON.parse(localStorage.getItem("historicoCompras")) || [];
+        const clienteHistorico = historicoCompras.filter(item => item.cliente === clienteAtual.email);
+
+        if (clienteHistorico.length > 0) {
+            clienteHistorico.forEach(item => {
+                const total = item.price * item.quantity;
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.name || 'Produto sem nome'}</td>
+                    <td>R$ ${item.price.toFixed(2)}</td>
+                    <td>${item.quantity}</td>
+                    <td>R$ ${total.toFixed(2)}</td>
+                    <td>${item.dataCompra || 'Data não disponível'}</td>
+                    <td>${item.status || 'A caminho'}</td>
+                `;
+                rastreamentoList.appendChild(row);
+            });
+        } else {
+            rastreamentoList.innerHTML = "<tr><td colspan='6'>Nenhum histórico de compras.</td></tr>";
+        }
+
+        // Carregar pontos de fidelidade acumulados
+        const fidelidade = JSON.parse(localStorage.getItem("fidelidade")) || [];
+        const clienteFidelidade = fidelidade.find(f => f.email === clienteAtual.email);
+        const pontosFidelidade = document.getElementById("pontos-fidelidade");
+
+        if (clienteFidelidade && clienteFidelidade.pontos > 0) {
+            pontosFidelidade.textContent = `Você tem ${clienteFidelidade.pontos} criptomoeda(s) eKoverde acumuladas!`;
+        } else {
+            pontosFidelidade.textContent = "Você ainda não tem pontos de fidelidade.";
+        }
+
+        // Função de logout
+        function logout() {
+            localStorage.removeItem("clienteLogado");
+            window.location.href = "entrar.html";
+        }
+    </script>
+</body>
+</html>

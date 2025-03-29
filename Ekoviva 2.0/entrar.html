@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Ekoviva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .login-container button:hover {
+            background-color: #218838;
+        }
+        .message {
+            text-align: center;
+            margin-top: 10px;
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login Ekoviva</h2>
+        <form id="login-form" onsubmit="verificarLogin(event)">
+            <input type="email" id="email" placeholder="E-mail" required>
+            <input type="password" id="senha" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+        <p id="message" class="message"></p>
+    </div>
+
+    <script>
+        function verificarLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const senha = document.getElementById("senha").value;
+            const message = document.getElementById("message");
+
+            const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+            const clienteEncontrado = clientes.find(cliente => 
+                cliente.email === email && cliente.senha === senha
+            );
+
+            if (clienteEncontrado) {
+                message.style.color = "#28a745";
+                message.textContent = `Bem-vindo, ${clienteEncontrado.nome}! Redirecionando...`;
+                
+                // Salvar cliente logado no localStorage
+                localStorage.setItem("clienteLogado", JSON.stringify(clienteEncontrado));
+                
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 2000);
+            } else {
+                message.style.color = "#ff0000";
+                message.textContent = "E-mail ou senha incorretos. Tente novamente.";
+                document.getElementById("email").value = "";
+                document.getElementById("senha").value = "";
+            }
+        }
+    </script>
+</body>
+</html>

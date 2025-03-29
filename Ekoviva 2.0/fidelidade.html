@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programa de Fidelidade - eKoverde</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        section {
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .fidelidade-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .info {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .resultado {
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Programa de Fidelidade eKoverde</h1>
+        <p>Troque seus pontos por criptomoedas eKoverde!</p>
+    </header>
+    
+    <section>
+        <div class="fidelidade-title">Troca de Pontos</div>
+        <p class="info" id="info-text"></p>
+        <div class="resultado" id="resultado"></div>
+    </section>
+
+    <script>
+        const clienteLogado = JSON.parse(localStorage.getItem("clienteLogado"));
+        const carrinho = JSON.parse(localStorage.getItem("cart")) || [];
+        const infoText = document.getElementById("info-text");
+        const resultado = document.getElementById("resultado");
+
+        if (!clienteLogado) {
+            infoText.innerHTML = "Você precisa estar logado para participar do programa de fidelidade. <a href='entrar.html'>Faça login aqui</a>.";
+        } else {
+            const totalCompra = carrinho.reduce((acc, item) => acc + item.price * item.quantity, 0);
+            const criptomoedas = Math.floor(totalCompra / 10);
+
+            infoText.textContent = `Olá, ${clienteLogado.nome}! O valor total da sua compra foi R$ ${totalCompra.toFixed(2)}.`;
+            resultado.textContent = `Você ganhou ${criptomoedas} criptomoeda(s) eKoverde nesta compra!`;
+
+            // Atualiza os pontos no banco de dados local
+            let fidelidade = JSON.parse(localStorage.getItem("fidelidade")) || [];
+            const clienteFidelidade = fidelidade.find(f => f.email === clienteLogado.email);
+
+            if (clienteFidelidade) {
+                clienteFidelidade.pontos += criptomoedas;
+            } else {
+                fidelidade.push({ email: clienteLogado.email, pontos: criptomoedas });
+            }
+
+            // Atualiza o clienteLogado com os pontos totais
+            clienteLogado.pontos = clienteFidelidade ? clienteFidelidade.pontos : criptomoedas;
+            localStorage.setItem("clienteLogado", JSON.stringify(clienteLogado));
+            localStorage.setItem("fidelidade", JSON.stringify(fidelidade));
+            localStorage.removeItem("cart");  // Limpa o carrinho após a compra
+
+            setTimeout(() => {
+                window.location.href = "perfil.html";
+            }, 3000);  // Redireciona após 3 segundos
+        }
+    </script>
+</body>
+</html>

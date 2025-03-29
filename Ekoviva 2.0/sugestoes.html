@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envie Sua Sugestão - eKoviva</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Adicione um link para seu CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        section {
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        .form-container textarea, .form-container button {
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-container button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .info {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Envie Sua Sugestão - eKoviva</h1>
+        <p>Tem alguma sugestão para melhorar nossos produtos ou serviços? Envie aqui!</p>
+    </header>
+    
+    <section>
+        <div class="title">Formulário de Sugestão</div>
+        <p class="info">Sua opinião é muito importante para nós. Preencha o campo abaixo e nos diga como podemos melhorar!</p>
+
+        <div class="form-container">
+            <form id="form-sugestao" action="processar_sugestao.php" method="POST">
+                <label for="nome">Seu Nome:</label>
+                <input type="text" id="nome" name="nome" required placeholder="Digite seu nome">
+
+                <label for="email">Seu E-mail:</label>
+                <input type="email" id="email" name="email" required placeholder="Digite seu e-mail">
+
+                <label for="sugestao">Sua Sugestão:</label>
+                <textarea id="sugestao" name="sugestao" rows="5" required placeholder="Digite sua sugestão"></textarea>
+
+                <button type="submit">Enviar Sugestão</button>
+            </form>
+        </div>
+    </section>
+    
+</body>
+</html>

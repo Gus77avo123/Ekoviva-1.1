@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Dados - Ekoviva</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            max-width: 1200px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+        h2 { 
+            color: #333; 
+            margin-top: 40px; 
+        }
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+            max-width: 800px; 
+            margin-bottom: 20px; 
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #f2f2f2; 
+        }
+        .clear-btn { 
+            background-color: #ff4444; 
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            border-radius: 5px;
+        }
+        .clear-btn:hover { 
+            background-color: #cc0000; 
+        }
+        .profile-pic {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Banco de Dados - Ekoviva</h1>
+
+    <h2>Clientes Cadastrados</h2>
+    <table id="clientesTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Foto</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Telefone</th>
+                <th>Endereço</th>
+                <th>Data de Nascimento</th>
+            </tr>
+        </thead>
+        <tbody id="clientesList"></tbody>
+    </table>
+
+    <h2>Carrinho Registrado</h2>
+    <table id="carrinhoTable">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Item</th>
+                <th>Preço</th>
+                <th>Quantidade</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody id="carrinhoList"></tbody>
+    </table>
+
+    <h2>Pontos de Fidelidade</h2>
+    <table id="fidelidadeTable">
+        <thead>
+            <tr>
+                <th>E-mail do Cliente</th>
+                <th>Pontos (Criptomoedas eKoverde)</th>
+            </tr>
+        </thead>
+        <tbody id="fidelidadeList"></tbody>
+    </table>
+
+    <button class="clear-btn" onclick="clearDatabase()">Limpar Banco de Dados</button>
+
+    <script>
+        function loadClientes() {
+            const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+            const clientesList = document.getElementById("clientesList");
+            clientesList.innerHTML = "";
+            clientes.forEach(cliente => {
+                const row = document.createElement("tr");
+                const fotoCell = cliente.foto 
+                    ? `<img src="${cliente.foto}" class="profile-pic" alt="Foto de ${cliente.nome}">` 
+                    : "Sem foto";
+                row.innerHTML = `
+                    <td>${cliente.id}</td>
+                    <td>${fotoCell}</td>
+                    <td>${cliente.nome}</td>
+                    <td>${cliente.email}</td>
+                    <td>${cliente.telefone}</td>
+                    <td>${cliente.endereco}</td>
+                    <td>${cliente.data_nascimento}</td>
+                `;
+                clientesList.appendChild(row);
+            });
+        }
+
+        function loadCarrinho() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const carrinhoList = document.getElementById("carrinhoList");
+            carrinhoList.innerHTML = "";
+            if (cart.length === 0) {
+                carrinhoList.innerHTML = "<tr><td colspan='5'>Nenhuma compra registrada.</td></tr>";
+                return;
+            }
+            cart.forEach(item => {
+                const total = item.price * item.quantity;
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${item.cliente || 'Cliente não identificado'}</td>
+                    <td>${item.name}</td>
+                    <td>R$ ${item.price.toFixed(2)}</td>
+                    <td>${item.quantity}</td>
+                    <td>R$ ${total.toFixed(2)}</td>
+                `;
+                carrinhoList.appendChild(row);
+            });
+        }
+
+        function loadFidelidade() {
+            const fidelidade = JSON.parse(localStorage.getItem("fidelidade")) || [];
+            const fidelidadeList = document.getElementById("fidelidadeList");
+            fidelidadeList.innerHTML = "";
+            if (fidelidade.length === 0) {
+                fidelidadeList.innerHTML = "<tr><td colspan='2'>Nenhum ponto registrado.</td></tr>";
+                return;
+            }
+            fidelidade.forEach(cliente => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${cliente.email}</td>
+                    <td>${cliente.pontos}</td>
+                `;
+                fidelidadeList.appendChild(row);
+            });
+        }
+
+        function clearDatabase() {
+            if (confirm("Tem certeza que deseja limpar todo o banco de dados? Esta ação não pode ser desfeita.")) {
+                localStorage.clear();
+                loadClientes();
+                loadCarrinho();
+                loadFidelidade();
+                alert("Banco de dados limpo com sucesso!");
+            }
+        }
+
+        window.onload = function() {
+            loadClientes();
+            loadCarrinho();
+            loadFidelidade();
+        };
+    </script>
+</body>
+</html>

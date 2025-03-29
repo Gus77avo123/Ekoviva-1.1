@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekoviva - Pagamento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .payment-methods {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .method-btn {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #fff;
+        }
+        .method-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        .payment-form {
+            display: none;
+        }
+        .payment-form.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .summary {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pagamento - Ekoviva</h1>
+        
+        <div class="payment-methods">
+            <button class="method-btn active" data-method="pix">Pix</button>
+            <button class="method-btn" data-method="credit">Cartão de Crédito</button>
+            <button class="method-btn" data-method="debit">Cartão de Débito</button>
+        </div>
+
+        <!-- Formulário Pix -->
+        <form id="pix" class="payment-form active">
+            <div class="form-group">
+                <label>Valor da Compra (R$)</label>
+                <input type="number" id="pix-subtotal" step="0.01" min="0" readonly>
+            </div>
+            <div class="summary">
+                <p>Subtotal: R$ <span id="pix-subtotal-display">0,00</span></p>
+                <p>Frete (5%): R$ <span id="pix-freight">0,00</span></p>
+                <p><strong>Total: R$ <span id="pix-total">0,00</span></strong></p>
+            </div>
+            <div class="form-group">
+                <p>Chave Pix: (61) 99591-6291</p>
+                <label>Enviar Comprovante</label>
+                <input type="file" id="pix-receipt" accept="image/*,application/pdf" required>
+            </div>
+            <button type="submit">Enviar Comprovante Pix</button>
+        </form>
+
+        <!-- Formulário Cartão de Crédito -->
+        <form id="credit" class="payment-form">
+            <div class="form-group">
+                <label>Valor da Compra (R$)</label>
+                <input type="number" id="credit-subtotal" step="0.01" min="0" readonly>
+            </div>
+            <div class="summary">
+                <p>Subtotal: R$ <span id="credit-subtotal-display">0,00</span></p>
+                <p>Frete (5%): R$ <span id="credit-freight">0,00</span></p>
+                <p><strong>Total: R$ <span id="credit-total">0,00</span></strong></p>
+            </div>
+            <div class="form-group">
+                <label>Número do Cartão</label>
+                <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" required>
+            </div>
+            <div class="form-group">
+                <label>Nome no Cartão</label>
+                <input type="text" placeholder="João Silva" required>
+            </div>
+            <div class="form-group" style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <label>Validade</label>
+                    <input type="text" placeholder="MM/AA" maxlength="5" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>CVV</label>
+                    <input type="text" placeholder="123" maxlength="3" required>
+                </div>
+            </div>
+            <button type="submit">Pagar com Crédito</button>
+        </form>
+
+        <!-- Formulário Cartão de Débito -->
+        <form id="debit" class="payment-form">
+            <div class="form-group">
+                <label>Valor da Compra (R$)</label>
+                <input type="number" id="debit-subtotal" step="0.01" min="0" readonly>
+            </div>
+            <div class="summary">
+                <p>Subtotal: R$ <span id="debit-subtotal-display">0,00</span></p>
+                <p>Frete (5%): R$ <span id="debit-freight">0,00</span></p>
+                <p><strong>Total: R$ <span id="debit-total">0,00</span></strong></p>
+            </div>
+            <div class="form-group">
+                <label>Número do Cartão</label>
+                <input type="text" placeholder="1234 5678 9012 3456" maxlength="19" required>
+            </div>
+            <div class="form-group">
+                <label>Nome no Cartão</label>
+                <input type="text" placeholder="João Silva" required>
+            </div>
+            <div class="form-group" style="display: flex; gap: 10px;">
+                <div style="flex: 1;">
+                    <label>Validade</label>
+                    <input type="text" placeholder="MM/AA" maxlength="5" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>CVV</label>
+                    <input type="text" placeholder="123" maxlength="3" required>
+                </div>
+            </div>
+            <button type="submit">Pagar com Débito</button>
+        </form>
+    </div>
+
+    <script>
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const methodButtons = document.querySelectorAll('.method-btn');
+        const paymentForms = document.querySelectorAll('.payment-form');
+
+        // Calcula o subtotal do carrinho
+        let subtotal = 0;
+        cart.forEach(item => {
+            subtotal += item.price * item.quantity;
+        });
+
+        // Função para calcular frete e atualizar valores
+        function updateFreight(method) {
+            const subtotalInput = document.getElementById(`${method}-subtotal`);
+            const subtotalDisplay = document.getElementById(`${method}-subtotal-display`);
+            const freightDisplay = document.getElementById(`${method}-freight`);
+            const totalDisplay = document.getElementById(`${method}-total`);
+
+            subtotalInput.value = subtotal; // Define o valor do subtotal do carrinho
+            const freight = subtotal * 0.05; // 5% do subtotal
+            const total = subtotal + freight;
+
+            subtotalDisplay.textContent = subtotal.toFixed(2).replace('.', ',');
+            freightDisplay.textContent = freight.toFixed(2).replace('.', ',');
+            totalDisplay.textContent = total.toFixed(2).replace('.', ',');
+
+            return total;
+        }
+
+        // Inicializa os valores para todos os métodos
+        ['pix', 'credit', 'debit'].forEach(updateFreight);
+
+        // Troca de métodos de pagamento
+        methodButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                methodButtons.forEach(btn => btn.classList.remove('active'));
+                paymentForms.forEach(form => form.classList.remove('active'));
+
+                button.classList.add('active');
+                const method = button.getAttribute('data-method');
+                document.getElementById(method).classList.add('active');
+            });
+        });
+
+        // Função para gerar número de rastreamento
+        function generateTrackingNumber() {
+            return 'EKOV' + Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+
+        // Envio do comprovante Pix
+        document.getElementById('pix').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const receipt = document.getElementById('pix-receipt').files[0];
+
+            if (!receipt) {
+                alert('Por favor, envie o comprovante de pagamento.');
+                return;
+            }
+
+            const total = updateFreight('pix');
+            const trackingNumber = generateTrackingNumber();
+            localStorage.setItem('trackingNumber', trackingNumber);
+            localStorage.setItem('cart', JSON.stringify([])); // Limpa o carrinho após o pagamento
+            alert(`Pagamento via Pix confirmado!\nTotal: R$ ${total.toFixed(2).replace('.', ',')}\nNúmero de rastreamento: ${trackingNumber}`);
+            window.location.href = "rastreamento.html";
+        });
+
+        // Pagamento com Cartão de Crédito
+        document.getElementById('credit').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const total = updateFreight('credit');
+            const trackingNumber = generateTrackingNumber();
+            localStorage.setItem('trackingNumber', trackingNumber);
+            localStorage.setItem('cart', JSON.stringify([])); // Limpa o carrinho após o pagamento
+            alert(`Pagamento via Cartão de Crédito confirmado!\nTotal: R$ ${total.toFixed(2).replace('.', ',')}\nNúmero de rastreamento: ${trackingNumber}`);
+            window.location.href = "rastreamento.html";
+        });
+
+        // Pagamento com Cartão de Débito
+        document.getElementById('debit').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const total = updateFreight('debit');
+            const trackingNumber = generateTrackingNumber();
+            localStorage.setItem('trackingNumber', trackingNumber);
+            localStorage.setItem('cart', JSON.stringify([])); // Limpa o carrinho após o pagamento
+            alert(`Pagamento via Cartão de Débito confirmado!\nTotal: R$ ${total.toFixed(2).replace('.', ',')}\nNúmero de rastreamento: ${trackingNumber}`);
+            window.location.href = "rastreamento.html";
+        });
+    </script>
+</body>
+</html>

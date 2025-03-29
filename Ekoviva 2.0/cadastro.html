@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cliente - eKoviva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        section {
+            padding: 20px;
+            margin: 20px auto;
+            width: 80%;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-container {
+            margin-top: 20px;
+        }
+        .form-container input, .form-container select, .form-container button {
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-container button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .info {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Cadastro de Cliente - eKoviva</h1>
+        <p>Preencha o formulário abaixo para se cadastrar em nosso sistema e aproveite as vantagens de nossos produtos ecológicos.</p>
+    </header>
+    
+    <section>
+        <div class="title">Formulário de Cadastro</div>
+        <p class="info">Preencha os dados abaixo para criar sua conta e se tornar um cliente eKoviva.</p>
+
+        <div class="form-container">
+            <form id="form-cadastro" onsubmit="cadastrarCliente(event)">
+                <label for="nome">Nome Completo:</label>
+                <input type="text" id="nome" name="nome" required placeholder="Digite seu nome completo">
+
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required placeholder="Digite seu e-mail">
+
+                <label for="telefone">Telefone:</label>
+                <input type="tel" id="telefone" name="telefone" required placeholder="Digite seu número de telefone">
+
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" required placeholder="Digite sua senha">
+
+                <label for="confirmar-senha">Confirmar Senha:</label>
+                <input type="password" id="confirmar-senha" name="confirmar-senha" required placeholder="Confirme sua senha">
+
+                <label for="endereco">Endereço Completo:</label>
+                <input type="text" id="endereco" name="endereco" required placeholder="Digite seu endereço completo">
+
+                <label for="data-nascimento">Data de Nascimento:</label>
+                <input type="date" id="data-nascimento" name="data-nascimento" required>
+
+                <label for="foto">Foto de Perfil (máx. 1MB):</label>
+                <input type="file" id="foto" name="foto" accept="image/*">
+
+                <button type="submit">Cadastrar</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        async function cadastrarCliente(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+
+            try {
+                // Pegar os valores do formulário
+                const nome = document.getElementById("nome").value.trim();
+                const email = document.getElementById("email").value.trim();
+                const telefone = document.getElementById("telefone").value.trim();
+                const senha = document.getElementById("senha").value;
+                const confirmarSenha = document.getElementById("confirmar-senha").value;
+                const endereco = document.getElementById("endereco").value.trim();
+                const dataNascimento = document.getElementById("data-nascimento").value;
+                const fotoInput = document.getElementById("foto");
+
+                // Verificar se todos os campos obrigatórios estão preenchidos
+                if (!nome || !email || !telefone || !senha || !endereco || !dataNascimento) {
+                    alert("Por favor, preencha todos os campos obrigatórios!");
+                    return;
+                }
+
+                // Verificar se as senhas coincidem
+                if (senha !== confirmarSenha) {
+                    alert("As senhas não coincidem!");
+                    return;
+                }
+
+                // Processar a foto como base64, se fornecida
+                let fotoUrl = "";
+                if (fotoInput.files && fotoInput.files.length > 0) {
+                    const file = fotoInput.files[0];
+                    const fileSizeMB = file.size / (1024 * 1024); // Tamanho em MB
+                    if (fileSizeMB > 1) {
+                        alert("A foto excede o limite de 1MB. Por favor, escolha uma imagem menor.");
+                        return;
+                    }
+                    fotoUrl = await readFileAsDataURL(file);
+                }
+
+                // Criar objeto do cliente
+                const cliente = {
+                    id: Date.now(), // ID único baseado em timestamp
+                    nome,
+                    email,
+                    telefone,
+                    senha,
+                    endereco,
+                    data_nascimento: dataNascimento,
+                    foto: fotoUrl // Foto em base64 (opcional, limitada a 1MB)
+                };
+
+                // Carregar clientes existentes ou criar novo array
+                let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+
+                // Verificar se o e-mail já está cadastrado
+                if (clientes.some(c => c.email === email)) {
+                    alert("Este e-mail já está cadastrado!");
+                    return;
+                }
+
+                // Adicionar novo cliente
+                clientes.push(cliente);
+
+                // Tentar salvar no localStorage
+                try {
+                    localStorage.setItem("clientes", JSON.stringify(clientes));
+                } catch (e) {
+                    if (e.name === "QuotaExceededError") {
+                        alert("O armazenamento local está cheio. Tente remover alguns dados ou usar uma foto menor.");
+                        return;
+                    }
+                    throw e; // Propagar outros erros
+                }
+
+                // Verificar se os dados foram salvos corretamente
+                const clientesSalvos = JSON.parse(localStorage.getItem("clientes"));
+                if (!clientesSalvos || !clientesSalvos.some(c => c.email === email)) {
+                    throw new Error("Falha ao salvar os dados no localStorage.");
+                }
+
+                console.log("Clientes salvos no localStorage:", clientesSalvos);
+                alert("Cadastro realizado com sucesso!");
+                window.location.href = "index.html"; // Redireciona para a página inicial
+            } catch (error) {
+                console.error("Erro ao cadastrar cliente:", error);
+                alert("Ocorreu um erro ao realizar o cadastro: " + error.message);
+            }
+        }
+
+        // Função para ler arquivo como base64
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error("Erro ao ler o arquivo da foto"));
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+</body>
+</html>
